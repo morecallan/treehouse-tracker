@@ -15,8 +15,8 @@ app.use(function(req, res, next) {
 
 
 app.get('/:classname', (req, res) => {
-  let apiCall = req.params.classname
-  console.log(apiCall)
+  let classname = req.params.classname
+
   // let apiReq = `http://api.petfinder.com/${apiCall}`
   // request.get(apiReq, (err, _, body) => {
   //   res.send(body)
