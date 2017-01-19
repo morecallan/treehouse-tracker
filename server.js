@@ -30,6 +30,7 @@ app.get('/treehouse/details/:classname', (req, res) => {
       if(err) {console.log(err)}
       let objBody = JSON.parse(body);
       const studentReturnObject = {}
+      studentReturnObject.id = student;
       studentReturnObject.name = studentInfo[student].Student;
       studentReturnObject.HTMLpoints = objBody.points["HTML"];
       studentReturnObject.CSSpoints = objBody.points["CSS"];
@@ -37,12 +38,22 @@ app.get('/treehouse/details/:classname', (req, res) => {
       studentReturnObject.TOTALpoints = objBody.points.total;
       studentInfoArray.push(studentReturnObject);
       if (studentInfoArray.length >= studentInfo.length) {
+        studentInfoArray.sort(compare)
         res.json(studentInfoArray)
       }
     });
   }
 
 });
+
+// COMPARISON SORT BY ID
+var compare = (a,b) => {
+  if (Number(a.id) < Number(b.id))
+    return -1;
+  if (Number(a.id) > Number(b.id))
+    return 1;
+  return 0;
+}
 
 app.listen(port, () =>
   console.log(`Listening on port: ${port}`)
