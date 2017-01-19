@@ -5,6 +5,7 @@ const app = express()
 const port = process.env.PORT || 6060
 app.set('port', port)
 const request = require('request');
+var fs = require("fs");
 
 // MIDDLEWARE (transform stream | allow CORS)
 app.use(function(req, res, next) {
@@ -14,13 +15,33 @@ app.use(function(req, res, next) {
 });
 
 
-app.get('/:classname', (req, res) => {
+app.get('/treehouse/details/:classname', (req, res) => {
   let classname = req.params.classname
 
-  // let apiReq = `http://api.petfinder.com/${apiCall}`
-  // request.get(apiReq, (err, _, body) => {
-  //   res.send(body)
-  // });
+  var content = fs.readFileSync(`${classname}.json`);
+  var studentInfo = JSON.parse(content);
+
+  let studentInfoArray = []
+
+
+
+  for (let student in studentInfo) {
+    request.get(`${studentInfo[student].Treehouse}.json`, (err, _, body) => {
+      if(err) {console.log(err)}
+      let objBody = JSON.parse(body);
+      const studentReturnObject = {}
+      studentReturnObject.name = studentInfo[student].Student;
+      studentReturnObject.HTMLpoints = objBody.points["HTML"];
+      studentReturnObject.CSSpoints = objBody.points["CSS"];
+      studentReturnObject.JSpoints = objBody.points.JavaScript;
+      studentReturnObject.TOTALpoints = objBody.points.total;
+      studentInfoArray.push(studentReturnObject);
+      if (studentInfoArray.length >= studentInfo.length) {
+        res.json(studentInfoArray)
+      }
+    });
+  }
+
 });
 
 app.listen(port, () =>
