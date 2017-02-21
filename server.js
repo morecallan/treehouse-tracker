@@ -20,6 +20,7 @@ app.get('/treehouse/details/:classname', (req, res) => {
 
   var content = fs.readFileSync(`${classname}.json`);
   var studentInfo = JSON.parse(content);
+  console.log(studentInfo)
 
   let studentInfoArray = []
 
@@ -30,12 +31,22 @@ app.get('/treehouse/details/:classname', (req, res) => {
       if(err) {console.log(err)}
       let objBody = JSON.parse(body);
       const studentReturnObject = {}
-      studentReturnObject.id = student;
-      studentReturnObject.name = studentInfo[student].Student;
-      studentReturnObject.HTMLpoints = objBody.points["HTML"];
-      studentReturnObject.CSSpoints = objBody.points["CSS"];
-      studentReturnObject.JSpoints = objBody.points.JavaScript;
-      studentReturnObject.TOTALpoints = objBody.points.total;
+
+      if (classname == "e4") {
+        studentReturnObject.id = student;
+        studentReturnObject.name = studentInfo[student].Student;
+        studentReturnObject.CSharpPoints = objBody.points['C#'];
+        studentReturnObject.DatabasePoints = objBody.points["Databases"];
+        studentReturnObject.TOTALpoints = objBody.points.total;
+      } else {
+        studentReturnObject.id = student;
+        studentReturnObject.name = studentInfo[student].Student;
+        studentReturnObject.HTMLpoints = objBody.points["HTML"];
+        studentReturnObject.CSSpoints = objBody.points["CSS"];
+        studentReturnObject.JSpoints = objBody.points.JavaScript;
+        studentReturnObject.TOTALpoints = objBody.points.total;
+      }
+
       studentInfoArray.push(studentReturnObject);
       if (studentInfoArray.length >= studentInfo.length) {
         studentInfoArray.sort(compare)
